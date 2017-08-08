@@ -1,0 +1,31 @@
+pragma solidity ^0.4.2;
+contract DonationMatcher {
+    address public beneficiary;
+    address public owner;
+    uint public deadline;
+    uint public percentagesAddedOnTop;
+
+
+    function DonationMatcher(address _beneficiary, uint _deadline, uint _percentagesAddedOnTop) {
+        owner = msg.sender;
+        beneficiary = _beneficiary;
+        deadline = _deadline;
+        percentagesAddedOnTop = _percentagesAddedOnTop;
+    }
+
+    function() payable {
+        if (owner == msg.sender) return;
+        uint amount = msg.value + (msg.value * percentagesAddedOnTop) / 100;
+        require (now <= deadline);
+        if (amount > address(this).balance) {
+            amount = address(this).balance;
+        }
+        beneficiary.transfer(amount);
+    }
+
+    function Destroy() {
+        if (owner == msg.sender && now > deadline) {
+            owner.transfer(address(this).balance);
+        }
+    }
+}
