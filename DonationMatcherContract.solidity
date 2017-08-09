@@ -5,8 +5,10 @@ contract DonationMatcher {
     uint public deadline;
     uint public percentagesAddedOnTop;
 
-
-    function DonationMatcher(address _beneficiary, uint _deadline, uint _percentagesAddedOnTop) {
+    function DonationMatcher(
+        address _beneficiary,
+        uint _deadline,
+        uint _percentagesAddedOnTop) {
         owner = msg.sender;
         beneficiary = _beneficiary;
         deadline = _deadline;
@@ -24,8 +26,7 @@ contract DonationMatcher {
     }
 
     function Destroy() {
-        if (owner == msg.sender && now > deadline) {
-            owner.transfer(address(this).balance);
-        }
+        require(owner == msg.sender && now > deadline)
+        owner.transfer(address(this).balance);
     }
 }
